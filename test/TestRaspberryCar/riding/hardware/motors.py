@@ -3,7 +3,7 @@ from time import sleep
 
 robot = Robot(left=(26, 20), right=(19, 16))
 
-# Draw a square
+# Checking as motors work properly
 if __name__ == "__main__":
     
     time = 3
