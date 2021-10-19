@@ -5,7 +5,7 @@ from .hardware.motors import robot
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-from hardware.camera import camera, output
+from .hardware.camera import camera, output
 
 STATE = False
 
