@@ -15,5 +15,5 @@ if __name__ == "__main__":
         sleep(time)
         robot.right()
         sleep(time)
-        robot.left
+        robot.left()
         sleep(time)

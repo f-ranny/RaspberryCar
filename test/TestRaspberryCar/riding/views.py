@@ -1,12 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+
 from .hardware.motors import robot
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+from hardware.camera import camera, output
+
+STATE = False
+
 
 # Create your views here.
 def index(request):
+    if not STATE:
+        camera.start_recording(output, format="mjpeg")
     return render(request, 'riding/index.html')
 
 
