@@ -27,15 +27,14 @@ def stream(request):
     response['Pragma'] = 'no-cache'
     response['Content-Type'] = 'multipart/x-mixed-replace; boundary=FRAME'
     try:
-        while True:
-            with output.condition:
-                output.condition.wait()
-                frame = output.frame
-            response.write(b'--FRAME\r\n')
-            response['Content-Type'] = 'image/jpeg'
-            response['Content-Length'] = len(frame)
-            response.write(frame)
-            response.write(b'\r\n')
+        with output.condition:
+            output.condition.wait()
+            frame = output.frame
+        response.write(b'--FRAME\r\n')
+        response['Content-Type'] = 'image/jpeg'
+        response['Content-Length'] = len(frame)
+        response.write(frame)
+        response.write(b'\r\n')
     except Exception as e:
         warning(
             'Removed streaming client %s: %s',
