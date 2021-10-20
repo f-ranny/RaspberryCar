@@ -6,15 +6,41 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 from .hardware.camera import camera, output
+from logging import warning
 
 STATE = False
 
 
 # Create your views here.
 def index(request):
+    global STATE
     if not STATE:
         camera.start_recording(output, format="mjpeg")
-    return render(request, 'riding/index.html')
+        STATE = True
+    return render(request, 'riding/index.html', )
+
+
+def stream(request):
+    response = HttpResponse()
+    response['Age'] = 0
+    response['Cache-Control'] = 'no-cache, private'
+    response['Pragma'] = 'no-cache'
+    response['Content-Type'] = 'multipart/x-mixed-replace; boundary=FRAME'
+    try:
+        while True:
+            with output.condition:
+                output.condition.wait()
+                frame = output.frame
+            response.write(b'--FRAME\r\n')
+            response['Content-Type'] = 'image/jpeg'
+            response['Content-Length'] = len(frame)
+            response.write(frame)
+            response.write(b'\r\n')
+    except Exception as e:
+        warning(
+            'Removed streaming client %s: %s',
+            request.get_host(), str(e))
+    return response
 
 
 @csrf_exempt
