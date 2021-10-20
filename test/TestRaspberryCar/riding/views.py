@@ -15,7 +15,7 @@ STATE = False
 def index(request):
     global STATE
     if not STATE:
-        camera.start_recording(output, format="mjpeg")
+        camera.capture(output, format="mjpeg")
         STATE = True
     return render(request, 'riding/index.html', )
 
